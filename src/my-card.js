@@ -15,18 +15,18 @@ export class MyCard extends LitElement {
   constructor() {
     super();
     this.title = "My Card";
-    this.bgc = 'blue';
     this.name = "Beaver Stadium";
     this.brdc = 'black';
+    this.fancy = false;
   }
 
   static get styles() {
     return css`
       :host {
-        display: block;
+        display: inline-block;
       }
       .card {
-      background-color: darkblue;
+      background-color: var(--my-card-fancy-bg, darkblue);
       padding: 10px;
       margin: 6px;
       max-width: 400px;
@@ -52,23 +52,35 @@ export class MyCard extends LitElement {
       background-color:blue;
     }
     #wrapper {
-    display: flex;
+    display: inline-block;
+    }
+    :host([fancy]) {
+    display: block;
+      background-color: pink;
+      border: 2px solid fuchsia;
+      box-shadow: 10px 5px 5px red;
     }
     `;
+  }
+
+  openChanged(e) {
+    console.log(e.newState);
+    if (e.newState === "open") {
+      this.fancy = true;
+    }
+    else {
+      this.fancy = false;
+    }
   }
 
   render() {
     return html`<div>${this.title}</div>
     <div id="wrapper">
       <div class="card original"
-        style="background-color: ${this.bgc}; border-color: ${this.brdc};">
+        style="border-color: ${this.brdc};">
         <h1 class="hd1">${this.name}</h1>
           <img class="img1"   src="https://gopsusports.com/imgproxy/xuPVPshSzLbxQ2PZazgWiKESdVoGiQg7eD4KJZhMK60/rs:fit:1980:0:0/g:ce/q:90/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2dvcHN1c3BvcnRzLXByb2QvMjAyNC8wNS8xMy9Oa3NGRENvOURDQWdTRlgyTVFqTlRROTN5ejBKb1J3TWZPcWhXWjluLmpwZw.jpg" alt="Image of Beaver Stadium" max-width: "75%">
-  
-       <p class="bsp">This is an image of beaver stadium at night before a white out game as the Penn State football team is running out onto the field. There are fireworks in the sky, and everyone is wearing white. Technically the stadium is West Shore Home Field at Beaver Stadium, but nobody calls it that. </p> 
-  
-        <a href="https://hax.psu.edu">
-        <button class="btn">Details</button>
+          <slot><strong>Beaver Stadium</strong> is the football stadium of Penn State Football</slot>
         </a>
       </div>
     </div>
@@ -78,9 +90,9 @@ export class MyCard extends LitElement {
   static get properties() {
     return {
       title: { type: String },
-      bgc: { type: String },
       name: { type: String },
       brdc: { type: String},
+      fancy: { type: Boolean, reflect: true },
     };
   }
 }
